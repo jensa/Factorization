@@ -75,6 +75,10 @@ public class Pollards implements FactorizationAlgorithm{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public String name() {
+		return "Pollards algorithm";
+	}
 
 
 }
