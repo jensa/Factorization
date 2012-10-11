@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class TestAlgorithm {
 
 	public static void main(String[] args){
-		FactorizationAlgorithm[] algorithms = { new Pollards() };
+		FactorizationAlgorithm[] algorithms = { new Pollards(), new QuadraticSieve() };
 		ArrayList<TestAlgorithmScore> algorithmScore = new ArrayList<TestAlgorithmScore>();
 		
 		String[] testValues = {"80", "5000", "100000",
@@ -17,9 +17,14 @@ public class TestAlgorithm {
 			ArrayList<Integer> answers = f.doFactorization(testValues, algorithm);
 			
 			long endTime = System.currentTimeMillis();
-			//Save score
 			
+			//Save score
 			algorithmScore.add(new TestAlgorithmScore(algorithm, answers, endTime-startTime));
+			
+			if (answers == null) {
+				System.out.println(algorithm.name() + " returned null");
+				break;
+			}
 			
 			StringBuilder sb = new StringBuilder (answers.size());
 			int answerIndex = 0;

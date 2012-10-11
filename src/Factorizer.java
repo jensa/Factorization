@@ -46,6 +46,10 @@ public class Factorizer {
 				BigInteger num = new BigInteger (numString);
 				answer = algo.factorNumber(num);
 			}
+			if (answer == null) {
+				return null;
+			}
+			
 			for (int j : answer)
 				answers.add(j);
 			answers.add(-900); //REMOVE THIS LINE BEFORE SENDING TO KATTIS
