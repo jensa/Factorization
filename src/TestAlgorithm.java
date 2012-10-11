@@ -19,7 +19,7 @@ public class TestAlgorithm {
 			long endTime = System.currentTimeMillis();
 			
 			//Save score
-			algorithmScore.add(new TestAlgorithmScore(algorithm, answers, endTime-startTime));
+			algorithmScore.add(new TestAlgorithmScore(algorithm, testValues, answers, endTime-startTime));
 			
 			if (answers == null) {
 				System.out.println(algorithm.name() + " returned null");
@@ -36,8 +36,8 @@ public class TestAlgorithm {
 					sb.append("Factors for n="+testValues[answerIndex]+":\n");
 				}
 				if (answers.get(i) > 0){
-				sb.append(answers.get(i));
-				sb.append("\n");
+					sb.append(answers.get(i));
+					sb.append("\n");
 				} else{
 					printedHeader = false;
 					answerIndex++;
@@ -47,7 +47,7 @@ public class TestAlgorithm {
 			System.out.print((sb.toString()));
 		}
 		
-		System.out.println("Algorithm               Time ");
+		System.out.println("Algorithm               Works?     Count    Time ");
 		for (int i = 0; i < algorithmScore.size(); i++) {
 			TestAlgorithmScore score = algorithmScore.get(i);
 			System.out.println(score.toString());

@@ -19,5 +19,4 @@ public class QuadraticSieve  implements FactorizationAlgorithm {
 	public String name() {
 		return "Quadratic Sieve:  ";
 	}
-
 }
