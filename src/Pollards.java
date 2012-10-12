@@ -79,6 +79,4 @@ public class Pollards implements FactorizationAlgorithm{
 	public String name() {
 		return "Pollards algorithm";
 	}
-
-
 }
