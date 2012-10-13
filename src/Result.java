@@ -32,25 +32,35 @@ public class Result {
 		}
 
 	}
-
+	
 	public String toString() {
+		return toString(false);
+	}
+
+	public String toString(boolean debug) {
 		StringBuilder sb = new StringBuilder (bigFactors.size());
 		BigInteger sum = new BigInteger("1");
-		sb.append("Factors for n="+number+":\n");
+		if (debug)
+			sb.append("Factors for n="+number+":\n");
 		for (BigInteger factor : bigFactors) {
 			sum = sum.multiply(factor);
 			sb.append(factor);
 			sb.append("\n");
-
 		}
-		if (sum.compareTo(number) == 0) {
-			sb.append("Passed!\n");
-		} else {
-			sb.append("FAILED!\n");
+		
+		if (debug) {
+			if (sum.compareTo(number) == 0) {
+				
+					sb.append("Passed!\n");
+			} else {
+				
+				sb.append("FAILED!\n");
+			}
 		}
 
-		sb.append("-----------\n");
-
+		if(debug)
+			sb.append("-----------");
+		sb.append("\n");
 		return (sb.toString());
 	}
 }

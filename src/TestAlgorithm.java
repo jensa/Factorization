@@ -28,7 +28,7 @@ public class TestAlgorithm {
 			algorithmScore.add(new TestAlgorithmScore(algorithm, testValues, results, endTime-startTime));
 
 			for (Result r : results ) {
-				System.out.print(r.toString());
+				System.out.print(r.toString(true));
 			}
 
 		}
