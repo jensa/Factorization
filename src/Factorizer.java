@@ -36,7 +36,7 @@ public class Factorizer {
 		ArrayList<Result> results = new ArrayList<Result>();
 		ArrayList<Integer> answers = new ArrayList<Integer> ();
 		
-		for (int i=0;i<toFactor.length;i+=2){
+		for (int i=0;i<toFactor.length;i++){
 			String numString = toFactor[i];
 			
 			int[] answer = null;

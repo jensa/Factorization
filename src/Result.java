@@ -35,13 +35,18 @@ public class Result {
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder (bigFactors.size());
-
+		BigInteger sum = new BigInteger("1");
 		sb.append("Factors for n="+number+":\n");
 		for (BigInteger factor : bigFactors) {
-
+			sum = sum.multiply(factor);
 			sb.append(factor);
 			sb.append("\n");
 
+		}
+		if (sum.compareTo(number) == 0) {
+			sb.append("Passed!\n");
+		} else {
+			sb.append("FAILED!\n");
 		}
 
 		sb.append("-----------\n");
