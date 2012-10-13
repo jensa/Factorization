@@ -20,6 +20,7 @@ public class PollardRho implements FactorizationAlgorithm {
 	public int[] factorNumber(BigInteger n) {
 		factors = new ArrayList<BigInteger>();
 		factor(n);
+		
 		int[] answer = new int[factors.size()];
 		int i = 0;
 		for (BigInteger factor : factors) {

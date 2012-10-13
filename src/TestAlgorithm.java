@@ -27,30 +27,11 @@ public class TestAlgorithm {
 			//Save score
 			algorithmScore.add(new TestAlgorithmScore(algorithm, testValues, results, endTime-startTime));
 
-			if (results == null) {
-				System.out.println(algorithm.name() + " returned null");
-
-			} else {
-
-				StringBuilder sb = new StringBuilder (results.size()*100);
-
-				for (int i=0;i<results.size();i++){
-					ArrayList<BigInteger> answers = results.get(i).bigFactors;
-					
-					sb.append("Factors for n="+results.get(i).number+":\n");
-					for (BigInteger factor : answers) {
-
-						sb.append(factor);
-						sb.append("\n");
-
-					}
-				
-					sb.append("-----------\n");
-				}
-				System.out.print((sb.toString()));
+			for (Result r : results ) {
+				System.out.print(r.toString());
 			}
-		}
 
+		}
 		System.out.println("Algorithm               Works?     Count    Time ");
 		for (TestAlgorithmScore score : algorithmScore) {
 			System.out.println(score.toString());
