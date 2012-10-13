@@ -32,8 +32,10 @@ public class Factorizer {
 		}
 	}
 
-	public ArrayList<Integer> doFactorization(String[] toFactor, FactorizationAlgorithm algo) {
+	public ArrayList<Result> doFactorization(String[] toFactor, FactorizationAlgorithm algo) {
+		ArrayList<Result> results = new ArrayList<Result>();
 		ArrayList<Integer> answers = new ArrayList<Integer> ();
+		
 		for (int i=0;i<toFactor.length;i+=2){
 			String numString = toFactor[i];
 			
@@ -41,19 +43,14 @@ public class Factorizer {
 			try{
 				int num = Integer.parseInt(numString);
 				answer = algo.factorNumber(num);
+				results.add(new Result(num, answer));
 				
 			} catch (NumberFormatException e){
 				BigInteger num = new BigInteger (numString);
 				answer = algo.factorNumber(num);
+				results.add(new Result(num, answer));
 			}
-			if (answer == null) {
-				return null;
-			}
-			
-			for (int j : answer)
-				answers.add(j);
-			answers.add(-900); //REMOVE THIS LINE BEFORE SENDING TO KATTIS
 		}
-		return answers;
+		return results;
 	}
 }

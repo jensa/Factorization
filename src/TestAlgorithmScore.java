@@ -1,79 +1,66 @@
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class TestAlgorithmScore {
 
 	FactorizationAlgorithm algorithm;
-	ArrayList<Integer> answers;
+	ArrayList<Result> results;
 	long timeElapsed;
 	String[] testValues;
-		
-	TestAlgorithmScore(FactorizationAlgorithm inputAlgorithm, String[] inputTestValues, ArrayList<Integer> inputAnswers, long inputTimeElapsed) {
+
+	TestAlgorithmScore(FactorizationAlgorithm inputAlgorithm, String[] inputTestValues, ArrayList<Result> inputAnswers, long inputTimeElapsed) {
 		algorithm = inputAlgorithm;
-		answers = inputAnswers;
+		results = inputAnswers;
 		timeElapsed = inputTimeElapsed;
 		testValues = inputTestValues;
 	}
-	
+
 	public boolean checkSolution() {
-		int sum = 0;
-		int answerIndex = 0;
 		boolean passed = true;
 		int passedCount = 0;
-		int testValue = Integer.parseInt(testValues[answerIndex]);
-		
-		if (answers == null) {
-			return false;
-		}
-		
-		for (int i=0;i<answers.size();i++){
-			if (answers.get(i) > 0){
-				sum += answers.get(i);
+
+		for (Result r : results) {
+			ArrayList<BigInteger> answers = r.bigFactors;
+			BigInteger sum = new BigInteger("1");
+
+			for (int i=0;i<answers.size();i++){
+				sum = sum.multiply(answers.get(i));
+			}
+			
+			if (sum.compareTo(r.number) == 0) {
+				passedCount += 1;
 			} else {
-				sum = 0;
-				answerIndex++;
-				if (sum != testValue) {
-					passed = false;
-				} else {
-					passedCount += 1;
-				}
+				passed = false;
 			}
 		}
 		
 		return passed;
 	}
-	
+
 	public int passedCount() {
-		int sum = 1;
-		int answerIndex = 0;
 		boolean passed = true;
 		int passedCount = 0;
-		int testValue = 0;
-	
-		if (answers == null) {
-			return 0;
-		}
-		
-		for (int i=0;i<answers.size();i++){
-			testValue = Integer.parseInt(testValues[answerIndex]);
 
-			if (answers.get(i) > 0){
-				sum = sum * answers.get(i).intValue();
+		for (Result r : results) {
+			ArrayList<BigInteger> answers = r.bigFactors;
+			BigInteger sum = new BigInteger("1");
+
+			for (int i=0;i<answers.size();i++){
+				sum = sum.multiply(answers.get(i));
+			}
+			
+			if (sum.compareTo(r.number)==0) {
+				passedCount += 1;
 			} else {
-				if (sum != testValue) {
-					passed = false;
-				} else {
-					passedCount += 1;
-				}
-				sum = 1;
-				answerIndex++;
+				passed = false;
 			}
 		}
 		
 		return passedCount;
 	}
-	
+
 	public String toString() {
-		
+
 		return algorithm.name() + "      " + checkSolution() + "      " + passedCount() + "/"+testValues.length + "      "+ timeElapsed; 
 	}
 }
