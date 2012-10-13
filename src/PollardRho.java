@@ -22,10 +22,8 @@ public class PollardRho implements FactorizationAlgorithm {
 		factor(n);
 		int[] answer = new int[factors.size()];
 		int i = 0;
-		System.out.println("n: " +n );
 		for (BigInteger factor : factors) {
 			answer[i] = factor.intValue();
-			System.out.println("factor: " +answer[i] );
 			i++;
 		}
 		
