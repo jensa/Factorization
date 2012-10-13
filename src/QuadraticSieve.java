@@ -1,18 +1,12 @@
 import java.math.BigInteger;
-
+import java.util.ArrayList;
 
 public class QuadraticSieve  implements FactorizationAlgorithm {
 
 	@Override
-	public int[] factorNumber(int n) {
+	public Result factorize(BigInteger n) {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int[] factorNumber(BigInteger n) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Result(n, new ArrayList<BigInteger>());
 	}
 
 	@Override

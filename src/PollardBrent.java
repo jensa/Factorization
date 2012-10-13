@@ -12,19 +12,10 @@ public class PollardBrent implements FactorizationAlgorithm{
 	public static BigInteger constants[]= new BigInteger[]{BigInteger.ONE, new BigInteger("2"), new BigInteger("3"), new BigInteger("5"), new BigInteger("7"), new BigInteger("11"), new BigInteger("13")};
 	long start_time;
 
-	@Override
-	public int[] factorNumber(int n) {
-		// TODO Auto-generated method stub
-		return factorNumber(BigInteger.valueOf(n));
-	}
-
-	public int[] factorNumber(BigInteger n) {
+	public Result factorize(BigInteger n) {
 		ArrayList<BigInteger> factors = factor(n);
-		int[] result = new int[factors.size()];
-		for (int i = 0; i < factors.size(); i++) {
-			result[i] = factors.get(i).intValue();
-			
-		}
+		
+		Result result = new Result(n, factors);
 		return result;
 	}
 

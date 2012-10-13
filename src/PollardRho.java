@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 
 public class PollardRho implements FactorizationAlgorithm {
+	private static boolean DEBUG = false;
 	private final static BigInteger ZERO = new BigInteger("0");
 	private final static BigInteger ONE  = new BigInteger("1");
 	private final static BigInteger TWO  = new BigInteger("2");
@@ -11,24 +12,11 @@ public class PollardRho implements FactorizationAlgorithm {
 	
 	private ArrayList<BigInteger> factors;
 	
-	@Override
-	public int[] factorNumber(int n) {
-		return factorNumber(BigInteger.valueOf(n));
-	}
-
-	@Override
-	public int[] factorNumber(BigInteger n) {
+	public Result factorize(BigInteger n) {
 		factors = new ArrayList<BigInteger>();
 		factor(n);
 		
-		int[] answer = new int[factors.size()];
-		int i = 0;
-		for (BigInteger factor : factors) {
-			answer[i] = factor.intValue();
-			i++;
-		}
-		
-		return answer;
+		return new Result(n, factors);	
 	}
 
 	@Override
@@ -38,12 +26,24 @@ public class PollardRho implements FactorizationAlgorithm {
 	}
 	
 	private void factor(BigInteger n) {
+		if (DEBUG)
+			System.out.println("factor number: " + n);
+		
 		if (n.compareTo(ONE) == 0) {
+			if (DEBUG)
+				System.out.println("comparded to one is 0");
 			return;
 		}
-		if (n.isProbablePrime(20)) { factors.add(n); return; }
+		if (n.isProbablePrime(20)) { 
+			if (DEBUG)
+				System.out.println("isprobprime: " + n);
+			factors.add(n);
+			return;
+		}
 		
 		BigInteger divisor = rho(n);
+		if (DEBUG)
+			System.out.println("divisor: " + divisor);
         factor(divisor);
         factor(n.divide(divisor));
 	}

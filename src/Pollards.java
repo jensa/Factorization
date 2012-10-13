@@ -8,8 +8,18 @@ public class Pollards implements FactorizationAlgorithm{
 
 	private int OriginalN;
 	
-	@Override
-	public int[] factorNumber(int n) {
+	public Result factorize(BigInteger n) {
+		int[] factors = factorNumber(n.intValue());
+		ArrayList<BigInteger> f = new ArrayList<BigInteger>();
+		
+		for (int i = 0; i < factors.length; i++) {
+			f.add(BigInteger.valueOf(factors[i]));
+		}
+		Result r = new Result(n, f);
+		return r;
+	}
+
+	private int[] factorNumber(int n) {
 		if (MillerRabin32.miller_rabin_32(n))
 			return new int[0];
 		OriginalN = n;
@@ -68,12 +78,6 @@ public class Pollards implements FactorizationAlgorithm{
 	public int GCD(int a, int b) {
 		if (b==0) return a;
 		return GCD(b,a%b);
-	}
-	
-	@Override
-	public int[] factorNumber(BigInteger n) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	public String name() {
