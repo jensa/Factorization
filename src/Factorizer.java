@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 
 public class Factorizer {
-	private static boolean DEBUG = true;
+	private static boolean DEBUG = false;
 	
 	public static void main(String[] args){
 		try{
@@ -36,7 +36,6 @@ public class Factorizer {
 
 	public ArrayList<Result> doFactorization(String[] toFactor, FactorizationAlgorithm algo) {
 		ArrayList<Result> results = new ArrayList<Result>();
-		ArrayList<Integer> answers = new ArrayList<Integer> ();
 		
 		for (int i=0;i<toFactor.length;i++){
 			String numString = toFactor[i];
@@ -51,6 +50,8 @@ public class Factorizer {
 				
 			} catch (NumberFormatException e){
 				BigInteger num = new BigInteger (numString);
+				if (DEBUG)
+					System.out.println("Bitlenght: " + num.bitLength());
 				answer = algo.factorNumber(num);
 				Result r = new Result(num, answer);
 				System.out.print(r.toString());
