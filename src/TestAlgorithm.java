@@ -24,11 +24,10 @@ public class TestAlgorithm {
 
 			long endTime = System.currentTimeMillis();
 
-			//Save score
 			algorithmScore.add(new TestAlgorithmScore(algorithm, testValues, results, endTime-startTime));
 
 			for (Result r : results ) {
-				System.out.print(r.toString(true));
+				System.out.print(r.toString(false));
 			}
 
 		}

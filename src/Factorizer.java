@@ -14,7 +14,7 @@ public class Factorizer {
 			
 			ArrayList<String> integers = new ArrayList<String> ();
 			
-			while (numberString != null){
+			while (!numberString.equals("")){
 				integers.add(numberString);
 				numberString = in.readLine();
 			}
@@ -24,8 +24,10 @@ public class Factorizer {
 				toFactor[i] = integers.get(i);
 			}
 			FactorizationAlgorithm pollards = new Pollards ();
+			FactorizationAlgorithm pollardRho = new PollardRho ();
 			
-			new Factorizer ().doFactorization (toFactor, pollards);
+			//Should change so it print to standard out as soon as one is finished. Otherwse kattis submissions will fail
+			new Factorizer ().doFactorization (toFactor, pollardRho);
 			
 		} catch (Exception e){
 			e.printStackTrace();
@@ -43,12 +45,16 @@ public class Factorizer {
 			try{
 				int num = Integer.parseInt(numString);
 				answer = algo.factorNumber(num);
-				results.add(new Result(num, answer));
+				Result r = new Result(num, answer);
+				System.out.print(r.toString());
+				results.add(r);
 				
 			} catch (NumberFormatException e){
 				BigInteger num = new BigInteger (numString);
 				answer = algo.factorNumber(num);
-				results.add(new Result(num, answer));
+				Result r = new Result(num, answer);
+				System.out.print(r.toString());
+				results.add(r);
 			}
 		}
 		return results;
