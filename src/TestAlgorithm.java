@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class TestAlgorithm {
 
 	public static void main(String[] args){
-		FactorizationAlgorithm[] algorithms = { new Pollards(), new PollardRho(), new PollardBrent(), new QuadraticSieve() };
+		FactorizationAlgorithm[] algorithms = { new PollardRho()};//, new PollardBrent(), new QuadraticSieve() };
 		ArrayList<TestAlgorithmScore> algorithmScore = new ArrayList<TestAlgorithmScore>();
 
 		String[] testValues = {"80", "5000", "100000",
@@ -18,7 +18,7 @@ public class TestAlgorithm {
 		Factorizer f = new Factorizer ();
 
 		for (FactorizationAlgorithm algorithm : algorithms) {
-			System.out.println("Using algorithm " + algorithm.name());
+//			System.out.println("Using algorithm " + algorithm.name());
 			long startTime = System.currentTimeMillis();
 
 			ArrayList<Result> results = f.doFactorization(testValues, algorithm);
@@ -27,14 +27,14 @@ public class TestAlgorithm {
 
 			algorithmScore.add(new TestAlgorithmScore(algorithm, testValues, results, endTime-startTime));
 
-			for (Result r : results ) {
-				System.out.print(r.toString(true));
-			}
+//			for (Result r : results ) {
+//				System.out.print(r.toString(true));
+//			}
 
 		}
-		System.out.println("Algorithm               Works?     Count    Time ");
-		for (TestAlgorithmScore score : algorithmScore) {
-			System.out.println(score.toString());
-		}
+//		System.out.println("Algorithm               Works?     Count    Time ");
+//		for (TestAlgorithmScore score : algorithmScore) {
+//			System.out.println(score.toString());
+//		}
 	}
 }

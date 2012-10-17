@@ -10,12 +10,16 @@ public class PollardRho implements FactorizationAlgorithm {
 	private final static BigInteger TWO  = new BigInteger("2");
 	private final static SecureRandom random = new SecureRandom();
 	
+	private long limit;
+	private long startTime;
+	
 	private ArrayList<BigInteger> factors;
 	
-	public Result factorize(BigInteger n) {
+	public Result factorize(BigInteger n, long time) {
+		startTime = System.currentTimeMillis();
+		limit = time;
 		factors = new ArrayList<BigInteger>();
 		factor(n);
-		
 		return new Result(n, factors);	
 	}
 
@@ -42,13 +46,17 @@ public class PollardRho implements FactorizationAlgorithm {
 		}
 		
 		BigInteger divisor = rho(n);
+		if (divisor == null){
+			factors.clear();
+			return;
+		}
 		if (DEBUG)
 			System.out.println("divisor: " + divisor);
         factor(divisor);
         factor(n.divide(divisor));
 	}
 	
-    public static BigInteger rho(BigInteger N) {
+    public BigInteger rho(BigInteger N) {
         BigInteger divisor;
         BigInteger c  = new BigInteger(N.bitLength(), random);
         BigInteger x  = new BigInteger(N.bitLength(), random);
@@ -58,6 +66,8 @@ public class PollardRho implements FactorizationAlgorithm {
         if (N.mod(TWO).compareTo(ZERO) == 0) return TWO;
 
         do {
+        	if (timeLimitExceeded ())
+        		return null;
             x  =  x.multiply(x).mod(N).add(c).mod(N);
             xx = xx.multiply(xx).mod(N).add(c).mod(N);
             xx = xx.multiply(xx).mod(N).add(c).mod(N);
@@ -65,5 +75,13 @@ public class PollardRho implements FactorizationAlgorithm {
         } while((divisor.compareTo(ONE)) == 0);
 
         return divisor;
+    }
+    
+    private boolean timeLimitExceeded (){
+    	boolean isOverLimit = (System.currentTimeMillis() > (startTime+limit));
+    	if (isOverLimit){
+        	return true;
+    	}
+    	return false;
     }
 }

@@ -10,19 +10,19 @@ public class Factorizer {
 	public static void main(String[] args){
 		try{
 			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-			String numberString = in.readLine();
 
 			ArrayList<String> integers = new ArrayList<String> ();
-
-			while (!numberString.equals("")){
-				integers.add(numberString);
+			String numberString;
+			while (in.ready()){
 				numberString = in.readLine();
+				integers.add(numberString);
 			}
 
 			String[] toFactor = new String[integers.size()];
 			for (int i=0;i<integers.size();i++){
 				toFactor[i] = integers.get(i);
 			}
+			
 			//FactorizationAlgorithm pollards = new Pollards ();
 			FactorizationAlgorithm pollardRho = new PollardRho ();
 
@@ -36,18 +36,24 @@ public class Factorizer {
 
 	public ArrayList<Result> doFactorization(String[] toFactor, FactorizationAlgorithm algo) {
 		ArrayList<Result> results = new ArrayList<Result>();
-
+		long timeLeft = 15000;
+		long startTime = System.currentTimeMillis();
+		StringBuilder sb = new StringBuilder ();
 		for (int i=0;i<toFactor.length;i++){
 			String numString = toFactor[i];
 
 			BigInteger num = new BigInteger (numString);
-
-			Result r = algo.factorize(num);
+			timeLeft = timeLeft - (System.currentTimeMillis() - startTime);
+			long time = timeLeft/(toFactor.length-i)+15;
+			Result r = algo.factorize(num, time);
 			
 			if (r != null)
-				System.out.print(r.toString());
+				sb.append(r.toString());
+			else
+				sb.append("fail\n");
 			results.add(r);
 		}
+		System.out.print(sb.toString());
 		return results;
 	}
 }

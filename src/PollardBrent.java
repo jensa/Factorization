@@ -4,7 +4,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Random;
 
-import checkForPrime.MillerRabin32;
 
 
 public class PollardBrent implements FactorizationAlgorithm{
@@ -12,9 +11,9 @@ public class PollardBrent implements FactorizationAlgorithm{
 	public static BigInteger constants[]= new BigInteger[]{BigInteger.ONE, new BigInteger("2"), new BigInteger("3"), new BigInteger("5"), new BigInteger("7"), new BigInteger("11"), new BigInteger("13")};
 	long start_time;
 
-	public Result factorize(BigInteger n) {
+	public Result factorize(BigInteger n, long time) {
+		long curTime = System.currentTimeMillis();
 		ArrayList<BigInteger> factors = factor(n);
-		
 		Result result = new Result(n, factors);
 		return result;
 	}
