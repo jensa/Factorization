@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class Factorizer {
 	private static boolean DEBUG = false;
+	private static final long TIME = 15000;
 
 	public static void main(String[] args){
 		try{
@@ -36,16 +37,13 @@ public class Factorizer {
 
 	public ArrayList<Result> doFactorization(String[] toFactor, FactorizationAlgorithm algo) {
 		ArrayList<Result> results = new ArrayList<Result>();
-		long timeLeft = 15000;
-		long startTime = System.currentTimeMillis();
+		long timeLeft = TIME / toFactor.length;
 		StringBuilder sb = new StringBuilder ();
 		for (int i=0;i<toFactor.length;i++){
 			String numString = toFactor[i];
 
 			BigInteger num = new BigInteger (numString);
-			timeLeft = timeLeft - (System.currentTimeMillis() - startTime);
-			long time = timeLeft/(toFactor.length-i)+15;
-			Result r = algo.factorize(num, time);
+			Result r = algo.factorize(num, timeLeft);
 			
 			if (r != null)
 				sb.append(r.toString());

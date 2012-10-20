@@ -1,6 +1,7 @@
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class PollardRho implements FactorizationAlgorithm {
@@ -8,10 +9,10 @@ public class PollardRho implements FactorizationAlgorithm {
 	private final static BigInteger ZERO = new BigInteger("0");
 	private final static BigInteger ONE  = new BigInteger("1");
 	private final static BigInteger TWO  = new BigInteger("2");
-	private final static SecureRandom random = new SecureRandom();
+	private final static Random random = new Random();
 	
-	private long limit;
-	private long startTime;
+	private static long limit;
+	private static long startTime;
 	
 	private ArrayList<BigInteger> factors;
 	
@@ -19,17 +20,16 @@ public class PollardRho implements FactorizationAlgorithm {
 		startTime = System.currentTimeMillis();
 		limit = time;
 		factors = new ArrayList<BigInteger>();
-		factor(n);
+		factor(n, factors);
 		return new Result(n, factors);	
 	}
 
 	@Override
 	public String name() {
-		// TODO Auto-generated method stub
 		return "PollardRho:       ";
 	}
 	
-	private void factor(BigInteger n) {
+	private static void factor(BigInteger n, ArrayList<BigInteger> factors) {
 		if (DEBUG)
 			System.out.println("factor number: " + n);
 		
@@ -52,32 +52,37 @@ public class PollardRho implements FactorizationAlgorithm {
 		}
 		if (DEBUG)
 			System.out.println("divisor: " + divisor);
-        factor(divisor);
-        factor(n.divide(divisor));
+        factor(divisor, factors);
+        factor(n.divide(divisor), factors);
 	}
 	
-    public BigInteger rho(BigInteger N) {
-        BigInteger divisor;
-        BigInteger c  = new BigInteger(N.bitLength(), random);
+    public static BigInteger rho(BigInteger N) {
+        if (N.mod(TWO).compareTo(ZERO) == 0)
+        	return TWO;
+
+        BigInteger d = null;
+    	BigInteger c = new BigInteger(N.bitLength(), random);
         BigInteger x  = new BigInteger(N.bitLength(), random);
-        BigInteger xx = x;
-
-        // check divisibility by 2
-        if (N.mod(TWO).compareTo(ZERO) == 0) return TWO;
-
-        do {
+        BigInteger y = x;
+        
+        while(d == null || (d.compareTo(ONE)) == 0){
         	if (timeLimitExceeded ())
         		return null;
-            x  =  x.multiply(x).mod(N).add(c).mod(N);
-            xx = xx.multiply(xx).mod(N).add(c).mod(N);
-            xx = xx.multiply(xx).mod(N).add(c).mod(N);
-            divisor = x.subtract(xx).gcd(N);
-        } while((divisor.compareTo(ONE)) == 0);
+            x = f (x, N, c); // f (x)
+            y = f ( f(y, N, c), N, c);  // f ( f(y) )
+            d = x.subtract(y).gcd (N); //
+        } 
 
-        return divisor;
+        return d;
     }
     
-    private boolean timeLimitExceeded (){
+    private static BigInteger f (BigInteger x, BigInteger N, BigInteger c){
+    	return x.pow(2).mod(N).add(c).mod(N);
+    }
+    
+    
+    
+    private static boolean timeLimitExceeded (){
     	boolean isOverLimit = (System.currentTimeMillis() > (startTime+limit));
     	if (isOverLimit){
         	return true;
