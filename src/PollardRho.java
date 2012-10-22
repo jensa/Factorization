@@ -57,8 +57,6 @@ public class PollardRho implements FactorizationAlgorithm {
 	}
 	
     public static BigInteger rho(BigInteger N) {
-        if (N.mod(TWO).compareTo(ZERO) == 0)
-        	return TWO;
 
         BigInteger d = null;
     	BigInteger c = new BigInteger(N.bitLength(), random);
