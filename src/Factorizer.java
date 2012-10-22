@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Factorizer {
 	private static boolean DEBUG = false;
-	private static final long TIME = 15000;
+	private static final long TIME = 14000;
 
 	public static void main(String[] args){
 		try{
@@ -25,7 +25,7 @@ public class Factorizer {
 			}
 			
 			//FactorizationAlgorithm pollards = new Pollards ();
-			FactorizationAlgorithm pollardRho = new PollardRho ();
+			FactorizationAlgorithm pollardRho = new PollardWat ();
 
 			//Should change so it print to standard out as soon as one is finished. Otherwse kattis submissions will fail
 			new Factorizer ().doFactorization (toFactor, pollardRho);
@@ -37,13 +37,15 @@ public class Factorizer {
 
 	public ArrayList<Result> doFactorization(String[] toFactor, FactorizationAlgorithm algo) {
 		ArrayList<Result> results = new ArrayList<Result>();
-		long timeLeft = TIME / toFactor.length;
+		long endTime = System.currentTimeMillis()+TIME;
 		StringBuilder sb = new StringBuilder ();
 		for (int i=0;i<toFactor.length;i++){
 			String numString = toFactor[i];
 
 			BigInteger num = new BigInteger (numString);
-			Result r = algo.factorize(num, timeLeft);
+			long timeLeft =  endTime - System.currentTimeMillis();
+			long time = timeLeft / (toFactor.length - i);
+			Result r = algo.factorize(num, time);
 			
 			if (r != null)
 				sb.append(r.toString());
