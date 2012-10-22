@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Factorizer {
 	private static boolean DEBUG = false;
-	private static final long TIME = 19000;
+	private static final long TIME = 17000;
 
 	public static void main(String[] args){
 		try{
@@ -26,10 +26,11 @@ public class Factorizer {
 			
 			//FactorizationAlgorithm pollards = new Pollards ();
     		NaiveIsPrime nip = new NaiveIsPrime ();
-			FactorizationAlgorithm pollardRho = new PollardWat (nip);
+//			FactorizationAlgorithm algo = new PollardWat (nip);
+    		FactorizationAlgorithm algo = new PollardBrent (nip);
 
-			//Should change so it print to standard out as soon as one is finished. Otherwse kattis submissions will fail
-			new Factorizer ().doFactorization (toFactor, pollardRho);
+			//Should change so it print to standard out as soon as one is finished. Otherwise kattis submissions will fail
+			new Factorizer ().doFactorization (toFactor, algo);
 
 		} catch (Exception e){
 			e.printStackTrace();
@@ -40,21 +41,27 @@ public class Factorizer {
 		ArrayList<Result> results = new ArrayList<Result>();
 		long endTime = System.currentTimeMillis()+TIME;
 		StringBuilder sb = new StringBuilder ();
+		
 		for (int i=0;i<toFactor.length;i++){
 			String numString = toFactor[i];
 
 			BigInteger num = new BigInteger (numString);
 			long timeLeft =  endTime - System.currentTimeMillis();
 			long time = timeLeft / (toFactor.length - i);
+			if (i < 30) {
+				time += 600;
+			}
 			Result r = algo.factorize(num, time);
 			
-			if (r != null)
+			if (r != null) {
 				sb.append(r.toString());
-			else
+			} else {
 				sb.append("fail\n");
+			}
 			results.add(r);
 		}
 		System.out.print(sb.toString());
+		
 		return results;
 	}
 }
