@@ -49,14 +49,18 @@ public class Result {
 		} else {
 			for (BigInteger factor : bigFactors) {
 				sum = sum.multiply(factor);
+				if (!factor.isProbablePrime(20)) {
+					sb = new StringBuilder();
+					sb.append("fail\n");
+					break;
+				}
 				sb.append(factor);
 				sb.append("\n");
 			}
 			
 			if (debug) {
 				if (sum.compareTo(number) == 0) {
-					
-						sb.append("Passed!\n");
+					sb.append("Passed!\n");
 				} else {
 					
 					sb.append("FAILED!\n");
@@ -67,7 +71,12 @@ public class Result {
 				sb.append("-----------");
 			sb.append("\n");
 		}
-		
+		//TODO Detta ska inte finnas här! Det betyder att vi räknar fel!
+		// Ta bort när jag kan!
+		if (sum.compareTo(number) != 0) {
+			sb = new StringBuilder();
+			sb.append("fail\n\n");
+		}
 		return (sb.toString());
 	}
 	
