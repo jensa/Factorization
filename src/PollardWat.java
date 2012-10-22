@@ -23,12 +23,13 @@ public class PollardWat implements FactorizationAlgorithm {
 		}
 
 		public Result factorize(BigInteger n, long time) {
+				BigInteger oN = n;
                 startTime = System.currentTimeMillis();
                 limit = time;
                 factors = new ArrayList<BigInteger>();
                 n = removeSmallFactors (n, factors);
                 factor(n, factors);
-                return new Result(n, factors);  
+                return new Result(oN, factors);  
         }
  
         private BigInteger removeSmallFactors(BigInteger n, ArrayList<BigInteger> factors) {
@@ -119,8 +120,6 @@ public class PollardWat implements FactorizationAlgorithm {
         private static BigInteger f (BigInteger x, BigInteger N, BigInteger c){
                 return x.pow(2).mod(N).add(c).mod(N);
         }
- 
- 
  
         private static boolean timeLimitExceeded (){
                 boolean isOverLimit = (System.currentTimeMillis() > (startTime+limit));
