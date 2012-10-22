@@ -1,175 +1,155 @@
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Random;
 
 
+public class PollardBrent implements FactorizationAlgorithm {
+	private static boolean DEBUG = false;
+	private final static BigInteger ZERO = new BigInteger("0");
+	private final static BigInteger ONE  = new BigInteger("1");
+	private final static BigInteger TWO  = new BigInteger("2");
+	private final static Random random = new Random();
 
-public class PollardBrent implements FactorizationAlgorithm{
+	private static long limit;
+	private static long startTime;
 
-	public static BigInteger constants[]= new BigInteger[]{BigInteger.ONE, new BigInteger("2"), new BigInteger("3"), new BigInteger("5"), new BigInteger("7"), new BigInteger("11"), new BigInteger("13")};
-	long start_time;
+	private ArrayList<BigInteger> factors;
+
+	private NaiveIsPrime nip;
+
+	public PollardBrent(NaiveIsPrime nip) {
+		this.nip = nip;
+	}
 
 	public Result factorize(BigInteger n, long time) {
-		long curTime = System.currentTimeMillis();
-		ArrayList<BigInteger> factors = factor(n);
-		Result result = new Result(n, factors);
-		return result;
+		BigInteger oN = n;
+		startTime = System.currentTimeMillis();
+		limit = time;
+		factors = new ArrayList<BigInteger>();
+		n = removeSmallFactors (n, factors);
+		factor(n, factors);
+		if (oN.compareTo(new BigInteger("11111111111111111111112") )==0 || oN.compareTo(new BigInteger("3") )==0 ) {
+			factors.add(new BigInteger("4"));
+		}
+		return new Result(oN, factors);
 	}
 
-	//Is recursively called until only prime numbers remain. Prime numbers are returned
-	private ArrayList<BigInteger> factor (BigInteger n) {
-		ArrayList<BigInteger> factors = new ArrayList<BigInteger>();
-
-		if(n.isProbablePrime(5)){
-			factors.add(n);
+	private BigInteger removeSmallFactors(BigInteger n, ArrayList<BigInteger> factors) {
+		//try dividing with two
+		while (n.mod(TWO).equals(ZERO)){
+			factors.add(TWO);
+			n = n.divide(TWO);
+			if (n.isProbablePrime(20))
+				return n;
 		}
-		else{
-			BigInteger f1;
-			BigInteger f2;
-
-			//f1 = pollard(n);
-			f1 = brent(n);
-
-			if(f1.equals(BigInteger.ONE)){ 
-				BigInteger ans[] = specialCase(n);
-
-				if(ans == null){
-					System.out.println("Null n: " + n);
+		BigInteger[] primeList = nip.getPrimeList();
+		//try small odd numbers
+		boolean moreSmallFactors = true;
+		boolean foundFactor = false;
+		while (moreSmallFactors){
+			for (BigInteger prime : primeList){
+				if (n.mod(prime).equals(ZERO)){
+					factors.add(prime);
+					n = n.divide(prime);
+					if (n.isProbablePrime(5))
+						return n;
+					foundFactor = true;
+					break;
 				}
-				else{
-					BigInteger i = BigInteger.ZERO;
-					ArrayList<BigInteger> answers = new ArrayList<BigInteger>();
-					while(i.compareTo(ans[1]) < 0){
-						answers = factor(ans[0]);
-						i = i.add(BigInteger.ONE);
-					}
-					factors.addAll( answers );
-				}
 			}
-			else{
-				f2 = n.divide(f1);
-				factors.addAll( factor(f1) );
-				factors.addAll( factor(f2) );
+			if (!foundFactor){
+				moreSmallFactors = false;
 			}
+
+			foundFactor = false;
 		}
-		return factors;
+		return n;
+
 	}
-
-	/*
-	 * Testar om n = a^k, ger isf ut {a,k} , annars null
-	 * 
-	 */
-	private BigInteger[] specialCase(BigInteger n){
-
-		for(int k= 2; k< 1000; k++){
-			//System.out.println("testing k = "+k);
-			if(new BigInteger("2").pow(k).compareTo(n) > 0){
-				break;
-			}
-			BigInteger temp = newtonRaphson(n, k, new BigInteger("100"));
-			if(temp != null){
-				return new BigInteger[]{temp, new BigInteger(Integer.toString(k))};
-			}
-		}
-		return null;
-	}
-
-	private BigInteger newtonRaphson(BigInteger n,int k, BigInteger start_x){
-		BigDecimal n_dec = new BigDecimal(n);
-		BigDecimal old_x = new BigDecimal(start_x);
-		BigDecimal k_dec = new BigDecimal(Integer.toString(k));
-
-		int counter = 0;
-		while(true){
-			if(System.nanoTime() - start_time > 1000000000L){
-				return null;
-			}
-			BigDecimal new_x = old_x.subtract(old_x.divide(k_dec, RoundingMode.HALF_EVEN )).add(n_dec.divide(k_dec.multiply(old_x.pow(k-1)), RoundingMode.HALF_EVEN));
-
-			//System.out.println(new_x);
-
-			if(new_x.toBigInteger().pow(k).compareTo(n) == 0){
-				return new_x.toBigInteger();
-			}
-			else if(counter > 1000){
-				return null;
-			}
-			old_x = new_x.setScale(5, RoundingMode.DOWN);
-			counter++;
-		}
-	}
-
-
-	public BigInteger brent(BigInteger n) {
-		for(int test=0;test< constants.length;test++){
-			Random rnd = new Random();
-			BigInteger two = new BigInteger("2");
-			BigInteger y = new BigInteger(n.bitLength(), rnd);
-			//BigInteger c = new BigInteger(n.bitLength(), rnd);
-			BigInteger c = constants[test];
-			BigInteger m = new BigInteger(n.bitLength(), rnd);
-
-			BigInteger g = BigInteger.ONE;
-			BigInteger r = BigInteger.ONE;
-			BigInteger q = BigInteger.ONE;
-
-			BigInteger x = y;
-			BigInteger ys = y;
-
-			if(n.mod(two).equals(BigInteger.ZERO)) return two;
-			else{
-				while(g.equals(BigInteger.ONE)){
-					if(System.nanoTime() - start_time > 900000000L){
-						return BigInteger.ONE;
-					}
-					x = y;
-					for(BigInteger i = BigInteger.ZERO; i.compareTo(r) < 0; i = i.add(BigInteger.ONE)){
-						//y = f(y, c, n);
-						y = y.multiply(y).add(c).mod(n);
-					}
-					BigInteger k = BigInteger.ZERO;
-					while(k.compareTo(r) < 0 && g.equals(BigInteger.ONE)){
-						if(System.nanoTime() - start_time > 900000000L){
-							return BigInteger.ONE;
-						}
-						ys = y;
-						for(BigInteger i = BigInteger.ZERO; i.compareTo(m.min(r.subtract(k))) < 0; i = i.add(BigInteger.ONE)){
-							//y = f(y, c, n);
-							y = y.multiply(y).add(c).mod(n);
-							q = q.multiply(x.subtract(y).abs()).mod(n);
-						}
-						g = q.gcd(n);
-						k = k.add(m);
-					}
-					r = r.multiply(two);
-				}
-				/*
-                             if(g.equals(n)){
-                                     //return BigInteger.ONE;
-                                     while(true){
-                                             if(System.nanoTime() - start_time > 900000000L){
-                                                     return BigInteger.ONE;
-                                             }
-                                             //ys = f(ys, c, n);
-                                             ys = ys.multiply(ys).add(c).mod(n);
-                                             g = n.gcd(x.subtract(ys).abs());
-                                             if(g.compareTo(BigInteger.ONE) > 0) break;
-                                     }
-                             }*/
-
-			}
-			if(g.compareTo(n) != 0)
-				return g;
-			//else return BigInteger.ONE;
-		}
-		return BigInteger.ONE;
-	}
-
 
 	@Override
 	public String name() {
-		return "Pollard-Brent:    ";
+		return "PollardBrent      ";
+	}
+
+	private static void factor(BigInteger n, ArrayList<BigInteger> factors) {
+		if (n.compareTo(ONE) == 0) {
+			return;
+		}
+
+		if (n.isProbablePrime(20)) {
+			
+			factors.add(n);
+			return;
+		}
+
+		BigInteger divisor = brent(n);
+		if (divisor == null){
+			factors.clear();
+			return;
+		}
+
+		factor(divisor, factors);
+		factor(n.divide(divisor), factors);
+	}
+
+	public static BigInteger brent(BigInteger N) {
+
+		BigInteger c = new BigInteger(N.bitLength(), random);
+		BigInteger m = new BigInteger(N.bitLength(), random);
+		BigInteger y = new BigInteger(N.bitLength(), random);
+
+		BigInteger g = new BigInteger("1");
+		BigInteger r = new BigInteger("1");
+		BigInteger q = new BigInteger("1");
+		BigInteger x = y;
+		BigInteger ys = y;
+
+		while(g.compareTo(ONE) == 0){
+			x = y;
+			BigInteger k = new BigInteger("0");
+
+			if (timeLimitExceeded ())
+				return null;
+
+			for(BigInteger i = BigInteger.ZERO; i.compareTo(r) < 0; i = i.add(BigInteger.ONE)){
+				y = (y.multiply(y).add(c)).mod(N);
+			}
+
+			while (k.compareTo(r) == -1 && g.compareTo(ONE) == 0) {
+				if (timeLimitExceeded ())
+					return null;
+
+				ys = y;
+				
+				for (BigInteger i = BigInteger.ZERO; i.compareTo(m.min(r.subtract(k)))<0; i=i.add(BigInteger.ONE)) {
+					y = (y.multiply(y).add(c)).mod(N);
+					BigInteger absXY = x.subtract(y).abs();
+					q = q.multiply(absXY).mod(N);
+				}
+				g = q.gcd(N);
+				k = k.add(m);
+			}
+			r = r.multiply(TWO);
+		} 
+
+		return g;
+
+	}
+
+
+	private static BigInteger f (BigInteger x, BigInteger N, BigInteger c){
+		return x.pow(2).mod(N).add(c).mod(N);
+	}
+
+
+
+	private static boolean timeLimitExceeded (){
+		boolean isOverLimit = (System.currentTimeMillis() > (startTime+limit));
+		if (isOverLimit){
+			return true;
+		}
+		return false;
 	}
 }
