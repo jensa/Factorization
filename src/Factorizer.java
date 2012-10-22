@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Factorizer {
 	private static boolean DEBUG = false;
-	private static final long TIME = 14000;
+	private static final long TIME = 19000;
 
 	public static void main(String[] args){
 		try{
@@ -25,7 +25,8 @@ public class Factorizer {
 			}
 			
 			//FactorizationAlgorithm pollards = new Pollards ();
-			FactorizationAlgorithm pollardRho = new PollardWat ();
+    		NaiveIsPrime nip = new NaiveIsPrime ();
+			FactorizationAlgorithm pollardRho = new PollardWat (nip);
 
 			//Should change so it print to standard out as soon as one is finished. Otherwse kattis submissions will fail
 			new Factorizer ().doFactorization (toFactor, pollardRho);

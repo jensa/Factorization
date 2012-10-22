@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class TestAlgorithm {
 
 	public static void main(String[] args){
-		FactorizationAlgorithm[] algorithms = { new PollardWat()};//, new PollardBrent(), new QuadraticSieve() };
+		FactorizationAlgorithm[] algorithms = { new PollardWat(new NaiveIsPrime ())};//, new PollardBrent(), new QuadraticSieve() };
 		ArrayList<TestAlgorithmScore> algorithmScore = new ArrayList<TestAlgorithmScore>();
 
 		String[] testValues = {"80", "5000", "100000",
