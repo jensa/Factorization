@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 
 public class NaiveIsPrime {
-	private int PRIME_CUTOFF = 30;
+	private int PRIME_CUTOFF = 51;
 	boolean[] list; //false if prime or unchecked. true if not prime.
 	BigInteger[] primeList;
 	

@@ -10,12 +10,12 @@ public class PollardRho implements FactorizationAlgorithm {
 	private final static BigInteger ONE  = new BigInteger("1");
 	private final static BigInteger TWO  = new BigInteger("2");
 	private final static Random random = new Random();
-	
+
 	private static long limit;
 	private static long startTime;
-	
+
 	private ArrayList<BigInteger> factors;
-	
+
 	public Result factorize(BigInteger n, long time) {
 		startTime = System.currentTimeMillis();
 		limit = time;
@@ -28,11 +28,11 @@ public class PollardRho implements FactorizationAlgorithm {
 	public String name() {
 		return "PollardRho:       ";
 	}
-	
+
 	private static void factor(BigInteger n, ArrayList<BigInteger> factors) {
 		if (DEBUG)
 			System.out.println("factor number: " + n);
-		
+
 		if (n.compareTo(ONE) == 0) {
 			if (DEBUG)
 				System.out.println("comparded to one is 0");
@@ -44,7 +44,7 @@ public class PollardRho implements FactorizationAlgorithm {
 			factors.add(n);
 			return;
 		}
-		
+
 		BigInteger divisor = rho(n);
 		if (divisor == null){
 			factors.clear();
@@ -52,39 +52,49 @@ public class PollardRho implements FactorizationAlgorithm {
 		}
 		if (DEBUG)
 			System.out.println("divisor: " + divisor);
-        factor(divisor, factors);
-        factor(n.divide(divisor), factors);
+		factor(divisor, factors);
+		factor(n.divide(divisor), factors);
 	}
-	
-    public static BigInteger rho(BigInteger N) {
 
-        BigInteger d = null;
-    	BigInteger c = new BigInteger(N.bitLength(), random);
-        BigInteger x  = new BigInteger(N.bitLength(), random);
-        BigInteger y = x;
-        
-        while(d == null || (d.compareTo(ONE)) == 0){
-        	if (timeLimitExceeded ())
-        		return null;
-            x = f (x, N, c); // f (x)
-            y = f ( f(y, N, c), N, c);  // f ( f(y) )
-            d = x.subtract(y).gcd (N); //
-        } 
+	public static BigInteger rho(BigInteger N) {
 
-        return d;
-    }
-    
-    private static BigInteger f (BigInteger x, BigInteger N, BigInteger c){
-    	return x.pow(2).mod(N).add(c).mod(N);
-    }
-    
-    
-    
-    private static boolean timeLimitExceeded (){
-    	boolean isOverLimit = (System.currentTimeMillis() > (startTime+limit));
-    	if (isOverLimit){
-        	return true;
-    	}
-    	return false;
-    }
+		BigInteger d = null;
+		BigInteger c = new BigInteger(N.bitLength(), random);
+		BigInteger x  = new BigInteger(N.bitLength(), random);
+		BigInteger y = x;
+		BigInteger mult = x;
+
+		int i = 0;
+		while(d == null || (d.compareTo(ONE)) == 0){
+			if (timeLimitExceeded ())
+				return null;
+			if (i == 100){
+				d = mult.gcd (N);
+				i = 0;
+			} else{
+				x = f (x, N, c); // f (x)
+				y = f ( f(y, N, c), N, c);  // f ( f(y) )
+				mult.multiply(x.subtract(y).abs());
+				d = null;
+				i++;
+			}
+			//
+		} 
+
+		return d;
+	}
+
+	private static BigInteger f (BigInteger x, BigInteger N, BigInteger c){
+		return x.pow(2).mod(N).add(c).mod(N);
+	}
+
+
+
+	private static boolean timeLimitExceeded (){
+		boolean isOverLimit = (System.currentTimeMillis() > (startTime+limit));
+		if (isOverLimit){
+			return true;
+		}
+		return false;
+	}
 }

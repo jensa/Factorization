@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Factorizer {
 	private static boolean DEBUG = false;
-	private static final long TIME = 17000;
+	private static final long TIME = 19000;
 
 	public static void main(String[] args){
 		try{
@@ -48,8 +48,8 @@ public class Factorizer {
 			BigInteger num = new BigInteger (numString);
 			long timeLeft =  endTime - System.currentTimeMillis();
 			long time = timeLeft / (toFactor.length - i);
-			if (i < 30) {
-				time += 600;
+			if (i < 35) {
+				time += 250;
 			}
 			Result r = algo.factorize(num, time);
 			
